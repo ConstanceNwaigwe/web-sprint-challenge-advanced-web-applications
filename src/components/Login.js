@@ -1,28 +1,44 @@
 import React, {useState} from 'react';
 import styled from 'styled-components';
 import axiosWithAuth from '../utils/axiosWithAuth';
+import { useHistory } from "react-router-dom";
 
 const credentials = {
     username: "",
     password: ""
-}
+};
 
 const Login = () => {
-    const [user, setUser] = useState(credentials);
-    //const [error, setError] = useState();
+    const { push } = useHistory();
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
+    const user = {
+        username: username,
+        password: password
+    };
     
-    const handleChange = (e) => {
-        setUser({[e.target.name]: e.target.value});
+    const usernameChange = (e) => {
+        setUsername(e.target.value);
+    };
+    const passwordChange = (e) => {
+        setPassword(e.target.value);
     };
     const login = (e) => {
         e.preventDefault();
-        axiosWithAuth().post('/login', user)
-        .then(res => {
-            console.log(res)
-            localStorage.setItem('token', res.data.token)
-            history.push('/view')
-        })
-        .catch(err => console.log(err.response.data))
+        console.log(username, password, user);
+        if(username == "Lambda" && password == "School"){
+            axiosWithAuth().post('/login', user)
+            .then(res => {
+                console.log(res)
+                localStorage.getItem('token')
+                push('/view')
+            })
+            .catch(err => console.log(err))
+        }
+        else{
+            setError("Username or Password is incorrect")
+        }
     };
     
     return(<ComponentContainer>
@@ -30,14 +46,14 @@ const Login = () => {
             <h1>Welcome to Blogger Pro</h1>
             <h2>Please enter your account information.</h2>
         </ModalContainer>
-        <FormGroup id="submit" onSubmit={login}>
+        <FormGroup onSubmit={login}>
             <Label for="username">Username</Label>
-            <Input type="text" name="username" id="username" value={user.username} onChange={handleChange} />
+            <Input type="text" name="username" id="username" value={username} onChange={usernameChange} />
             <Label for="password">Password</Label>
-            <Input type="text" name="password" id="password" value={user.password} onChange={handleChange} />
-            <Button>Log In</Button>
+            <Input type="text" name="password" id="password" value={password} onChange={passwordChange} />
+            <Button id="submit">Log In</Button>
         </FormGroup>
-        <p id="error"></p>
+        <p id="error">{error}</p>
     </ComponentContainer>);
 }
 
