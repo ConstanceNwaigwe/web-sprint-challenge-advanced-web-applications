@@ -2,13 +2,42 @@ import React, {useState} from 'react';
 import styled from 'styled-components';
 import axiosWithAuth from '../utils/axiosWithAuth';
 
+const credentials = {
+    username: "",
+    password: ""
+}
+
 const Login = () => {
+    const [user, setUser] = useState(credentials);
+    //const [error, setError] = useState();
+    
+    const handleChange = (e) => {
+        setUser({[e.target.name]: e.target.value});
+    };
+    const login = (e) => {
+        e.preventDefault();
+        axiosWithAuth().post('/login', user)
+        .then(res => {
+            console.log(res)
+            localStorage.setItem('token', res.data.token)
+            history.push('/view')
+        })
+        .catch(err => console.log(err.response.data))
+    };
     
     return(<ComponentContainer>
         <ModalContainer>
             <h1>Welcome to Blogger Pro</h1>
             <h2>Please enter your account information.</h2>
         </ModalContainer>
+        <FormGroup id="submit" onSubmit={login}>
+            <Label for="username">Username</Label>
+            <Input type="text" name="username" id="username" value={user.username} onChange={handleChange} />
+            <Label for="password">Password</Label>
+            <Input type="text" name="password" id="password" value={user.password} onChange={handleChange} />
+            <Button>Log In</Button>
+        </FormGroup>
+        <p id="error"></p>
     </ComponentContainer>);
 }
 
