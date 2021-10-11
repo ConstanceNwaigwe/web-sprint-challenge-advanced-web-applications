@@ -9,6 +9,9 @@ import View from './View';
 import Login from './Login';
 import Logout from './Logout';
 
+//<PrivateRoute exact path="/view" component={View}/>
+//<PrivateRoute exact path="/logout" component={Logout}/> 
+
 const App = () => {
   return (
     <AppContainer>
@@ -24,9 +27,9 @@ const App = () => {
         <Route exact path="/logout">
           <Logout/>
         </Route>
-        <Route exact path="/view">
+        <PrivateRoute exact path="/view" component={View}>
           <View/>
-        </Route>          
+        </PrivateRoute>         
       </RouteContainer>
     </AppContainer>
   )

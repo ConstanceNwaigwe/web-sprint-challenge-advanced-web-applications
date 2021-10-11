@@ -1,18 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect  } from 'react';
 import styled from 'styled-components';
+import articleService from '../services/articleServices';
+import axiosWithAuth from '../utils/axiosWithAuth';
+import { useParams, useHistory } from "react-router-dom";
 
 import Article from './Article';
 import EditForm from './EditForm';
 
 const View = (props) => {
+    const { push } = useHistory();
+    const { id } = useParams();
     const [articles, setArticles] = useState([]);
     const [editing, setEditing] = useState(false);
     const [editId, setEditId] = useState();
 
+    //setArticles(articleService());
+    useEffect(() => {
+        setArticles(articleService());
+    }, [])
+
     const handleDelete = (id) => {
+        axiosWithAuth().delete(`/articles/${id}`)
+        .then(res => {
+            props.setArticles(res.data)
+            push('/view')
+        })
+        .catch(err => console.log(err))
     }
 
     const handleEdit = (article) => {
+        axiosWithAuth().put(`/articles/${id}`, article)
+        .then(res => {
+            props.setArticle(res.data)
+            push('/view')
+        })
+        .catch(err => console.log(err))
     }
 
     const handleEditSelect = (id)=> {

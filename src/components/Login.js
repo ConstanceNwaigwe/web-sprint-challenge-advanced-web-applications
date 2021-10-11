@@ -30,9 +30,10 @@ const Login = () => {
         if(username == "Lambda" && password == "School"){
             axiosWithAuth().post('/login', user)
             .then(res => {
-                console.log(res)
+                console.log(res.data)
                 localStorage.getItem('token')
                 push('/view')
+                console.log("pushed")
             })
             .catch(err => console.log(err))
         }
